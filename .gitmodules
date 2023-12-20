@@ -1,0 +1,3 @@
+[submodule "pulumi-service"]
+	path = pulumi-service
+	url = https://github.com/pulumi/pulumi-service.git
