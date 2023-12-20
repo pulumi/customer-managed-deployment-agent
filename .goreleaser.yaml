@@ -1,0 +1,29 @@
+dist: goreleaser
+project_name: customer-managed-deployment-agent
+checksum:
+  name_template: 'checksums.txt'
+builds:
+  - id: customer-managed-deployment-agent
+    binary: customer-managed-deployment-agent
+    dir: ./pulumi-service/cmd/customer-managed-deployment-agent
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/cmd/customer-managed-deployment-agent/version.Version={{.Tag}}
+signs:
+  - cmd: cosign
+    stdin: '{{ .Env.COSIGN_PASSWORD }}'
+    args:
+      - "sign-blob"
+      - "--key=cosign.key"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: all
+
