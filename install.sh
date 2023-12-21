@@ -78,13 +78,13 @@ done
 if [ -z "${VERSION}" ]; then
     VERSION=0.0.1
     # TODO: automate latest-version selection
-#    # Query pulumi.com/esc/latest-version for the most recent release. Because this approach
+#    # Query pulumi.com/customer-managed-deployment-agent/latest-version for the most recent release. Because this approach
 #    # is now used by third parties as well (e.g., GitHub Actions virtual environments),
 #    # changes to this API should be made with care to avoid breaking any services that
 #    # rely on it (and ideally be accompanied by PRs to update them accordingly).
 #
-#    if ! VERSION=$(curl --retry 3 --fail --silent -L "https://www.pulumi.com/esc/latest-version"); then
-#        >&2 say_red "error: could not determine latest version of Pulumi ESC, try passing --version X.Y.Z to"
+#    if ! VERSION=$(curl --retry 3 --fail --silent -L "https://www.pulumi.com/customer-managed-deployment-agent/latest-version"); then
+#        >&2 say_red "error: could not determine latest version of Pulumi Customer Managed Deployment Agent, try passing --version X.Y.Z to"
 #        >&2 say_red "       install an explicit version"
 #        exit 1
 #    fi
@@ -112,7 +112,6 @@ case $(uname -m) in
 esac
 
 TARBALL_URL="https://github.com/pulumi/customer-managed-deployment-agent/releases/download/v${VERSION}/"
-#TARBALL_URL_FALLBACK="https://get.pulumi.com/esc/releases/"
 TARBALL_PATH=customer-managed-deployment-agent-v${VERSION}-${OS}-${ARCH}.tar.gz
 
 if ! command -v customer-managed-deployment-agent >/dev/null; then
@@ -124,7 +123,6 @@ fi
 TARBALL_DEST=$(mktemp -t cmda.tar.gz.XXXXXXXXXX)
 
 download_tarball() {
-    # Try to download from github first, then fallback to get.pulumi.com
     say_white "+ Downloading ${TARBALL_URL}${TARBALL_PATH}..."
     # This should opportunistically use the GITHUB_TOKEN to avoid rate limiting
     # ...I think. It's hard to test accurately. But it at least doesn't seem to hurt.
@@ -133,14 +131,6 @@ download_tarball() {
         -o "${TARBALL_DEST}" "${TARBALL_URL}${TARBALL_PATH}"; then
             return 1
     fi
-#    if ! curl --fail ${SILENT} -L \
-#        --header "Authorization: Bearer $GITHUB_TOKEN" \
-#        -o "${TARBALL_DEST}" "${TARBALL_URL}${TARBALL_PATH}"; then
-#        say_white "+ Error encountered, falling back to ${TARBALL_URL_FALLBACK}${TARBALL_PATH}..."
-#        if ! curl --retry 2 --fail ${SILENT} -L -o "${TARBALL_DEST}" "${TARBALL_URL_FALLBACK}${TARBALL_PATH}"; then
-#            return 1
-#        fi
-#    fi
 }
 
 if download_tarball; then
@@ -222,6 +212,19 @@ elif [ "$(command -v customer-managed-deployment-agent)" != "$HOME/.pulumi/bin/c
     say_yellow "         on your \$PATH at $(dirname "$(command -v customer-managed-deployment-agent)"). You'll need to explicitly invoke the"
     say_yellow "         version you just installed or modify your \$PATH to prefer this location."
 fi
+
+check_for_docker() {
+    say_blue
+    say_blue "=== Checking for docker on \$PATH ==="
+
+    if ! command -v docker >/dev/null; then
+        say_red "+ docker not found. customer-managed-deployment-agent requires docker to be available on your \$PATH."
+    else
+        say_white "+ Confirmed"
+    fi
+}
+
+check_for_docker
 
 say_blue
 say_blue "=== Pulumi Customer Managed Deployment Agent is now installed! ==="
