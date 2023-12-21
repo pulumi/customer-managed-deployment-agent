@@ -1,0 +1,44 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - v*.*.*
+      - '!v*.*.*-**'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+
+jobs:
+  publish:
+    uses: ./.github/workflows/stage-publish.yaml
+    with:
+      goreleaser-args: -p 10 -f .goreleaser.yaml --rm-dist --skip-validate --timeout 60m0s --release-notes=CHANGELOG_PENDING.md
+    secrets: inherit
+
+  dispatch:
+    name: ${{ matrix.job.name }}
+    if: "!contains(${{ github.ref_name }}, '-')"
+    runs-on: ubuntu-latest
+    needs: [publish]
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: Dispatch docs workflow
+            run-command: pulumictl create cli-docs-build "${{ github.ref_name }}" --event-type "customer-managed-deployment-agent"
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Install Pulumictl
+        uses: jaxxstorm/action-install-gh-release@v1.7.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+        with:
+          repo: pulumi/pulumictl
+          tag: v0.0.45
+          cache: enable
+      - name: Repository Dispatch
+        run: ${{ matrix.job.run-command }}

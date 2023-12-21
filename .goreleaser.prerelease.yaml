@@ -1,0 +1,86 @@
+dist: goreleaser
+project_name: customer-managed-deployment-agent
+changelog:
+  skip: true
+release:
+  disable: true
+checksum:
+  name_template: 'checksums.txt'
+builds:
+  - id: customer-managed-deployment-agent
+    binary: customer-managed-deployment-agent
+    dir: ./pulumi-service/cmd/customer-managed-deployment-agent
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/cmd/customer-managed-deployment-agent/version.Version={{.Tag}}
+
+  - id: workflow-runner
+    binary: workflow-runner
+    dir: ./pulumi-service/cmd/workflow-runner
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
+      - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+
+  - id: workflow-runner-embeddable
+    binary: workflow-runner-embeddable
+    dir: ./pulumi-service/cmd/workflow-runner
+    goarch:
+      - amd64
+    goos:
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
+      - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+    hooks:
+      post: cp {{ .Path }} workflow-runner-embeddable # Rename the file for easy archiving.
+
+archives:
+  - id: customer-managed-deployment-agent
+    builds:
+      - customer-managed-deployment-agent
+      - workflow-runner
+    files:
+      - workflow-runner-embeddable          # Always include the linux-x64 binary, which is used by the docker container.
+      - pulumi-deployment-agent.yaml.sample # Include the config file sample
+    name_template: >-
+      customer-managed-deployment-agent-
+      {{- .Tag }}-
+      {{- .Os }}-
+      {{- if eq .Arch "amd64" }}x64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    wrap_in_directory: customer-managed-deployment-agent
+
+signs:
+  - cmd: cosign
+    stdin: '{{ .Env.COSIGN_PASSWORD }}'
+    args:
+      - "sign-blob"
+      - "--key=cosign.key"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: all
+
+announce:
+  skip: true
+

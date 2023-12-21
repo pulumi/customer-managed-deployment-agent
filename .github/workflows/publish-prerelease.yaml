@@ -1,0 +1,16 @@
+name: Publish Prerelease
+
+on:
+  push:
+    tags:
+      - v*.*.*-**
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+
+jobs:
+  publish:
+    uses: ./.github/workflows/stage-publish.yaml
+    with:
+      goreleaser-args: -p 10 -f .goreleaser.prerelease.yaml --rm-dist --skip-validate --timeout 60m0s --release-notes=CHANGELOG_PENDING.md
+    secrets: inherit
