@@ -144,21 +144,24 @@ download_tarball() {
 }
 
 if download_tarball; then
-    say_white "+ Extracting to $HOME/.pulumi/bin"
+    say_white "+ Extracting to $HOME/.pulumi/bin/customer-managed-deployment-agent"
 
-    # If `~/.pulumi/bin/customer-managed-deployment-agent exists`, remove it
+    # If `~/.pulumi/bin/customer-managed-deployment-agent exists`, remove the existing files.
+    # Note: handle files explicitly to avoid removing any existing configuration file
     if [ -e "${HOME}/.pulumi/bin/customer-managed-deployment-agent" ]; then
-        rm -rf "${HOME}/.pulumi/bin/customer-managed-deployment-agent"
+        rm -f "${HOME}/.pulumi/bin/customer-managed-deployment-agent/customer-managed-deployment-agent"
+        rm -f ${HOME}/.pulumi/bin/customer-managed-deployment-agent/workflow-runner*
+        rm -f "${HOME}/.pulumi/bin/customer-managed-deployment-agent/pulumi-deployment-agent.yaml.sample"
     fi
 
-    mkdir -p "${HOME}/.pulumi/bin"
+    mkdir -p "${HOME}/.pulumi/bin/customer-managed-deployment-agent"
 
     # Yarn's shell installer does a similar dance of extracting to a temp
     # folder and copying to not depend on additional tar flags
     EXTRACT_DIR=$(mktemp -dt cmda.XXXXXXXXXX)
     tar zxf "${TARBALL_DEST}" -C "${EXTRACT_DIR}"
 
-    cp "${EXTRACT_DIR}/customer-managed-deployment-agent" "${HOME}/.pulumi/bin/"
+    cp ${EXTRACT_DIR}/customer-managed-deployment-agent/* "${HOME}/.pulumi/bin/customer-managed-deployment-agent/"
 
     rm -f "${TARBALL_DEST}"
     rm -rf "${EXTRACT_DIR}"
@@ -172,7 +175,7 @@ fi
 # Now that we have installed the Customer Managed Deployment Agent, if it is not already on the path, let's add a line
 # to the user's profile to add the folder to the PATH for future sessions.
 if ! command -v customer-managed-deployment-agent >/dev/null; then
-    # If we can, we'll add a line to the user's .profile adding $HOME/.pulumi/bin to the PATH
+    # If we can, we'll add a line to the user's .profile adding $HOME/.pulumi/bin/customer-managed-deployment-agent to the PATH
     SHELL_NAME=$(basename "${SHELL}")
     PROFILE_FILE=""
 
@@ -203,19 +206,19 @@ if ! command -v customer-managed-deployment-agent >/dev/null; then
     esac
 
     if [ -n "${PROFILE_FILE}" ]; then
-        LINE_TO_ADD="export PATH=\$PATH:\$HOME/.pulumi/bin"
+        LINE_TO_ADD="export PATH=\$PATH:\$HOME/.pulumi/bin/customer-managed-deployment-agent"
         if ! grep -q "# add Pulumi Customer Managed Deployment Agent to the PATH" "${PROFILE_FILE}"; then
-            say_white "+ Adding \$HOME/.pulumi/bin to \$PATH in ${PROFILE_FILE}"
-            printf "\\n# add Customer Managed Deployment Agent to the PATH\\n%s\\n" "${LINE_TO_ADD}" >> "${PROFILE_FILE}"
+            say_white "+ Adding \$HOME/.pulumi/bin/customer-managed-deployment-agent to \$PATH in ${PROFILE_FILE}"
+            printf "\\n# add Pulumi Customer Managed Deployment Agent to the PATH\\n%s\\n" "${LINE_TO_ADD}" >> "${PROFILE_FILE}"
         fi
 
-        EXTRA_INSTALL_STEP="+ Please restart your shell or add $HOME/.pulumi/bin to your \$PATH"
+        EXTRA_INSTALL_STEP="+ Please restart your shell or add $HOME/.pulumi/bin/customer-managed-deployment-agent to your \$PATH"
     else
-        EXTRA_INSTALL_STEP="+ Please add $HOME/.pulumi/bin to your \$PATH"
+        EXTRA_INSTALL_STEP="+ Please add $HOME/.pulumi/bin/customer-managed-deployment-agent to your \$PATH"
     fi
-elif [ "$(command -v customer-managed-deployment-agent)" != "$HOME/.pulumi/bin/customer-managed-deployment-agent" ]; then
+elif [ "$(command -v customer-managed-deployment-agent)" != "$HOME/.pulumi/bin/customer-managed-deployment-agent/customer-managed-deployment-agent" ]; then
     say_yellow
-    say_yellow "warning: Pulumi Customer Managed Deployment Agent has been installed to $HOME/.pulumi/bin, but it looks like there's a different copy"
+    say_yellow "warning: Pulumi Customer Managed Deployment Agent has been installed to $HOME/.pulumi/bin/customer-managed-deployment-agent, but it looks like there's a different copy"
     say_yellow "         on your \$PATH at $(dirname "$(command -v customer-managed-deployment-agent)"). You'll need to explicitly invoke the"
     say_yellow "         version you just installed or modify your \$PATH to prefer this location."
 fi
