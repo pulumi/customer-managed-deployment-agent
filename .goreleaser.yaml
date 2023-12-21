@@ -2,26 +2,6 @@ dist: goreleaser
 project_name: customer-managed-deployment-agent
 checksum:
   name_template: 'checksums.txt'
-archives:
-  - id: archive
-    name_template: >-
-      {{- .Binary }}-
-      {{- .Tag }}-
-      {{- .Os }}-
-      {{- if eq .Arch "amd64" }}x64
-      {{- else }}{{ .Arch }}{{ end }}
-    format_overrides:
-      - goos: windows
-        format: zip
-    files:
-      # OS specific scripts, not compiled
-      - src: bin/{{ .Os }}/*
-        dst: '.'
-        strip_parent: true
-      # binaries
-      - src: bin/{{ .Os }}-{{ .Arch }}/*
-        dst: '.'
-        strip_parent: true
 builds:
   - id: customer-managed-deployment-agent
     binary: customer-managed-deployment-agent
@@ -36,6 +16,49 @@ builds:
       - -s
       - -w
       - -X github.com/pulumi/pulumi-service/cmd/customer-managed-deployment-agent/version.Version={{.Tag}}
+
+  - id: workflow-runner
+    binary: workflow-runner
+    dir: ./pulumi-service/cmd/workflow-runner
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
+      - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+
+archives:
+  - id: customer-managed-deployment-agent
+    builds:
+      - customer-managed-deployment-agent
+    name_template: >-
+      {{- .Binary }}-
+      {{- .Tag }}-
+      {{- .Os }}-
+      {{- if eq .Arch "amd64" }}x64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+
+  - id: workflow-runner
+    builds:
+      - workflow-runner
+    name_template: >-
+      {{- .Binary }}-
+      {{- .Tag }}-
+      {{- .Os }}-
+      {{- if eq .Arch "amd64" }}x64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+
 signs:
   - cmd: cosign
     stdin: '{{ .Env.COSIGN_PASSWORD }}'
