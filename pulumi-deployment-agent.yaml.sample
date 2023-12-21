@@ -1,0 +1,4 @@
+token: REPLACE_WITH_TOKEN
+service_url: https://api.pulumi.com
+workflow_runners_directory: $PWD
+workflow_runners_embeddable: $PWD/workflow-runner-embeddable

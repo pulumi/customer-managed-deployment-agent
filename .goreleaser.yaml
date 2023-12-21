@@ -32,25 +32,31 @@ builds:
       - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
       - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
 
+  - id: workflow-runner-embeddable
+    binary: workflow-runner-embeddable
+    dir: ./pulumi-service/cmd/workflow-runner
+    goarch:
+      - amd64
+    goos:
+      - linux
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
+      - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+    hooks:
+      post: cp {{ .Path }} workflow-runner-embeddable # Rename the file for easy archiving.
+
 archives:
   - id: customer-managed-deployment-agent
     builds:
       - customer-managed-deployment-agent
-    name_template: >-
-      {{- .Binary }}-
-      {{- .Tag }}-
-      {{- .Os }}-
-      {{- if eq .Arch "amd64" }}x64
-      {{- else }}{{ .Arch }}{{ end }}
-    format_overrides:
-      - goos: windows
-        format: zip
-
-  - id: workflow-runner
-    builds:
       - workflow-runner
+    files:
+      - workflow-runner-embeddable          # Always include the linux-x64 binary, which is used by the docker container.
+      - pulumi-deployment-agent.yaml.sample # Include the config file sample
     name_template: >-
-      {{- .Binary }}-
+      customer-managed-deployment-agent-
       {{- .Tag }}-
       {{- .Os }}-
       {{- if eq .Arch "amd64" }}x64
@@ -58,6 +64,7 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    wrap_in_directory: customer-managed-deployment-agent
 
 signs:
   - cmd: cosign
@@ -69,4 +76,7 @@ signs:
       - "${artifact}"
       - "--yes" # needed on cosign 2.0.0+
     artifacts: all
+
+announce:
+  skip: true
 
