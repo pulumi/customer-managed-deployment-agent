@@ -12,5 +12,5 @@ jobs:
   publish:
     uses: ./.github/workflows/stage-publish.yaml
     with:
-      goreleaser-args: -p 10 -f .goreleaser.prerelease.yaml --clean --skip-validate --timeout 60m0s --release-notes=CHANGELOG_PENDING.md
+      goreleaser-args: -p 10 -f .goreleaser.prerelease.yaml --clean --skip=validate --timeout 60m0s --release-notes=CHANGELOG_PENDING.md
     secrets: inherit
