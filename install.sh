@@ -76,18 +76,16 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "${VERSION}" ]; then
-    VERSION=0.0.1
-    # TODO: automate latest-version selection
-#    # Query pulumi.com/customer-managed-deployment-agent/latest-version for the most recent release. Because this approach
-#    # is now used by third parties as well (e.g., GitHub Actions virtual environments),
-#    # changes to this API should be made with care to avoid breaking any services that
-#    # rely on it (and ideally be accompanied by PRs to update them accordingly).
-#
-#    if ! VERSION=$(curl --retry 3 --fail --silent -L "https://www.pulumi.com/customer-managed-deployment-agent/latest-version"); then
-#        >&2 say_red "error: could not determine latest version of Pulumi Customer Managed Deployment Agent, try passing --version X.Y.Z to"
-#        >&2 say_red "       install an explicit version"
-#        exit 1
-#    fi
+    # Query pulumi.com/customer-managed-deployment-agent/latest-version for the most recent release. Because this approach
+    # is now used by third parties as well (e.g., GitHub Actions virtual environments),
+    # changes to this API should be made with care to avoid breaking any services that
+    # rely on it (and ideally be accompanied by PRs to update them accordingly).
+
+    if ! VERSION=$(curl --retry 3 --fail --silent -L "https://www.pulumi.com/customer-managed-deployment-agent/latest-version"); then
+        >&2 say_red "error: could not determine latest version of Pulumi Customer Managed Deployment Agent, try passing --version X.Y.Z to"
+        >&2 say_red "       install an explicit version"
+        exit 1
+    fi
 fi
 
 OS=""
