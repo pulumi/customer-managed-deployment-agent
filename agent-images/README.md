@@ -20,7 +20,7 @@ You should also have created a Deployment Runner pool by logging into [Pulumi Cl
 
 Next click on the "Add pool" button. Enter a name and (optional) description and click "Create pool". This will then show you a deployment runner access token that looks like this:
 
-[!img/access-token.png](Image showing a deployment runner access token)
+![Image showing a deployment runner access token](img/access-token.png)
 
 Make a note of this as you will need it when you create a runner later on and once you refresh or leave this page you will not see it again and have to create a new runner pool.
 
