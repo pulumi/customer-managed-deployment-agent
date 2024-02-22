@@ -20,7 +20,7 @@ You should also have created a Deployment Runner pool by logging into [Pulumi Cl
 
 Next click on the "Add pool" button. Enter a name and (optional) description and click "Create pool". This will then show you a deployment runner access token that looks like this:
 
-[!https://raw.githubusercontent.com/pulumi/customer-managed-deployment-agent/main/agent-images/img/access-token.png](Image showing a deployment runner access token)
+[!img/access-token.png](Image showing a deployment runner access token)
 
 Make a note of this as you will need it when you create a runner later on and once you refresh or leave this page you will not see it again and have to create a new runner pool.
 
@@ -67,7 +67,7 @@ Once the AMI has been created then you can create an EC2 instance using it.
 1. Create a new stack: `pulumi stack init {stackname}`
 1. Run the following commands to add the relevant configuration values:
     - `pulumi config set aws:region {region}` - This does not have to be the same region that you built the AMI in
-    - `pulumi config set deploymentAccessToken {token} --secret` - this is the access token that you were shown when you created the runner pool at the beginning of this process
+    - `pulumi config set runnerAccessToken {token} --secret` - this is the access token that you were shown when you created the runner pool at the beginning of this process
     - (Optional) `pulumi config set vpcId {vpcid}` - the VPC you want the EC2 instance to run in. If you don't set this it will run in the default VPC for your account.
     - (Optional) `pulumi config set instanceType {instanceType}` - the instance type of the EC2 instance you want to run. If you don't set this it will default to `t3.small`.
 1. Run `pulumi up` and select the `yes` option if you are happy with the set up.

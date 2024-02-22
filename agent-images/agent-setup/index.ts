@@ -4,7 +4,7 @@ import * as aws from "@pulumi/aws";
 export = async () => {
 
   const config = new pulumi.Config();
-  const accessToken = config.requireSecret("deploymentAccessToken");
+  const accessToken = config.requireSecret("runnerAccessToken");
   const vpcId = config.get("vpdId");
   const amiPrefix = config.get("amiPrefix") || "pulumi-deployment-agent";
   const instanceType = config.get("instanceType") || "t3.small";
