@@ -1,0 +1,62 @@
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: agent-secret
+  namespace: <desired-namespace>
+type: Opaque
+data:
+  PULUMI_AGENT_TOKEN: <api token>
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.kubernetes.io/name: pulumi-deployment-agent-pool
+  name: deployment-agent-pool
+  namespace: <desired-namespace>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulumi-deployment-agent-pool
+  template:
+    metadata:
+      labels:
+        app: pulumi-deployment-agent-pool
+        app.kubernetes.io/name: pulumi-deployment-agent-pool
+    spec:
+      containers:
+      - name: agent
+        image: <image_location>
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: PULUMI_AGENT_SHARED_VOLUME_DIRECTORY
+          value: /mnt/work
+        - name: PULUMI_AGENT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: PULUMI_AGENT_TOKEN
+              name: agent-secret
+        volumeMounts:
+        - mountPath: /mnt/work
+          name: agent-work
+      - name: dind
+        image: docker:dind
+        imagePullPolicy: IfNotPresent
+        command:
+        - dockerd
+        - --host
+        - tcp://127.0.0.1:2375
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /mnt/work
+          name: agent-work
+      volumes:
+      - emptyDir: {}
+        name: agent-work

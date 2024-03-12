@@ -1,0 +1,3 @@
+name: pulumi-agent-kubernetes
+runtime: nodejs
+description: Installs customer managed kubernetes agent in a Kubernetes cluster
