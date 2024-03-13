@@ -8,7 +8,6 @@ RUN curl -fsSL https://raw.githubusercontent.com/pulumi/customer-managed-deploym
 
 FROM alpine:3.18
 
-# RUN apk add curl && curl -fsSL https://raw.githubusercontent.com/pulumi/customer-managed-deployment-agent/main/install.sh | sh
 
 ENV PATH="${PATH}:/usr/local/bin/customer-managed-deployment-agent"
 
