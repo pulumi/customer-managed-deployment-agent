@@ -8,7 +8,6 @@ RUN curl -fsSL https://raw.githubusercontent.com/pulumi/customer-managed-deploym
 
 FROM alpine:3.18
 
-
 ENV PATH="${PATH}:/usr/local/bin/customer-managed-deployment-agent"
 
 COPY --from=buildenv /home/builder/.pulumi/bin/customer-managed-deployment-agent /usr/local/bin/customer-managed-deployment-agent

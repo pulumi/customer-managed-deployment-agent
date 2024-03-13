@@ -1,5 +1,0 @@
-config:
-  pulumi-agent-kubernetes:agentImage: pulumi/pulumi-agent:curl
-  pulumi-agent-kubernetes:agentNamespace: cleve
-  pulumi-agent-kubernetes:selfHostedAgentsAccessToken:
-    secure: AAABAHuPZ+dAFij75JobhddLgARxfziefiVXBIe+ybvGZTYMoUn3ZCDaLQItYxFhwZ75xedG1GSdYxydtGVJ0U+UW0wqEoN3RLEqMg==

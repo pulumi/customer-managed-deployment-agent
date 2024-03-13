@@ -1,2 +1,4 @@
 goreleaser
 workflow-runner-embeddable
+kubernetes/Pulumi.review_stacks.yaml
+kubernetes/Pulumi.dev.yaml

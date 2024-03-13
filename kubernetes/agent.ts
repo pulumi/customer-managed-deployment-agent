@@ -4,6 +4,7 @@ import * as kubernetes from "@pulumi/kubernetes";
 export interface PulumiSelfHostedAgentComponentArgs {
     namespace: kubernetes.core.v1.Namespace;
     imageName: pulumi.Input<string>;
+    imagePullPolicy: pulumi.Input<string>;
     selfHostedAgentsAccessToken: pulumi.Input<string>;
 }
 
@@ -49,7 +50,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                         {
                             name: "agent",
                             image: args.imageName,
-                            imagePullPolicy: "IfNotPresent",
+                            imagePullPolicy: args.imagePullPolicy,
                             env: [
                                 {
                                     name: "DOCKER_HOST",
@@ -79,7 +80,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                         {
                             name: "dind",
                             image: "docker:dind",
-                            imagePullPolicy: "IfNotPresent",
+                            imagePullPolicy: "Always",
                             command: ["dockerd", "--host", "tcp://127.0.0.1:2375"],
                             securityContext: {
                                 privileged: true,
