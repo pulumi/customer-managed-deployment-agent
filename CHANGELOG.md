@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-1.1.0 (2024-05-25)
+1.1.0 (2024-05-15)
 
 * Add support for OIDC token exchange
 
