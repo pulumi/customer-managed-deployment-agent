@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.1.1 (2024-07-03)
+
+* Add new configuration to skip pulling images from the docker registry
+
 1.1.0 (2024-05-15)
 
 * Add support for OIDC token exchange
