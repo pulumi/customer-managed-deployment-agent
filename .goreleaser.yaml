@@ -66,6 +66,14 @@ archives:
         format: zip
     wrap_in_directory: customer-managed-deployment-agent
 
+dockers:
+  - image_templates:
+      - pulumi/customer-managed-deployment-agent:{{ .TAG }}
+      - pulumi/customer-managed-deployment-agent:latest
+    build_flag_templates:
+      - --build-arg=AGENTBINARY={{ .Builds.customer-managed-deployment-agent.binary }}
+      - --build-arg=RUNNERBINARY={{ .Builds.workflow-runner.binary }}
+
 signs:
   - cmd: cosign
     stdin: '{{ .Env.COSIGN_PASSWORD }}'
