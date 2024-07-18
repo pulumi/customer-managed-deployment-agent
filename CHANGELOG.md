@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.2.0 (2024-07-22)
+
+* Add Kubernetes-native deployment mode and installer
+
 1.1.3 (2024-07-22)
 
 * Update build settings to avoid dynamic linking errors on Alpine Linux

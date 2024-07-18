@@ -13,9 +13,7 @@ const agent = new PulumiSelfHostedAgentComponent(
         namespace: ns,
         imageName: pulumiConfig.require("agentImage"),
         selfHostedAgentsAccessToken: pulumiConfig.requireSecret("selfHostedAgentsAccessToken"),
-        selfHostedServiceURL: pulumiConfig.get("selfHostedServiceURL") ?? "https://api.pulumi.com",
         imagePullPolicy: pulumiConfig.get("agentImagePullPolicy") || "Always",
-        agentReplicas: pulumiConfig.getNumber("agentReplicas") || 3,
     },
     { dependsOn: [ns] },
 );

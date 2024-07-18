@@ -1,25 +1,17 @@
-# Installing the self-managed agent into Kubernetes
+# Installing the self managed agent into Kubernetes using Docker-in-Docker
 
 ## Prerequisites 
 
+* Build container and push to docker repository [Dockerfile](../Dockerfile)
 * Use `pulumi config` to set imageName, namespace, and access token
 
 * Install
 ```bash
 pulumi config set agentNamespace <desired namespace>
-pulumi config set --secret selfHostedAgentsAccessToken <access token>
+pulumi config set --secret pulumi-agent-kubernetes:selfHostedAgentsAccessToken <access token>
 pulumi config set agentImage <imageTag>
-pulumi config set agentReplicas <replicas>
 
 pulumi up
-```
-
-For example:
-```bash
-pulumi config set agentNamespace cmda
-pulumi config set --secret selfHostedAgentsAccessToken pul-...
-pulumi config set agentImage pulumi/customer-managed-deployment-agent:latest-amd64
-pulumi config set agentReplicas 3
 ```
 
 Optionally you can set an `agentImagePullPolicy` to a [Kubernetes supported value](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy), which defaults to `Always`.
