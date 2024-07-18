@@ -70,11 +70,13 @@ dockers:
   - image_templates:
       - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-amd64"
       - "pulumi/customer-managed-deployment-agent:latest-amd64"
+    goarch: amd64
     build_flag_templates:
       - "--platform=linux/amd64"
   - image_templates:
       - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-arm64"
       - "pulumi/customer-managed-deployment-agent:latest-arm64"
+    goarch: arm64
     build_flag_templates:
       - "--platform=linux/arm64"
 
