@@ -1,3 +1,4 @@
+version: 2
 dist: goreleaser
 project_name: customer-managed-deployment-agent
 checksum:
@@ -70,12 +71,14 @@ dockers:
   - image_templates:
       - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-amd64"
       - "pulumi/customer-managed-deployment-agent:latest-amd64"
+    use: buildx
     goarch: amd64
     build_flag_templates:
       - "--platform=linux/amd64"
   - image_templates:
       - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-arm64"
       - "pulumi/customer-managed-deployment-agent:latest-arm64"
+    use: buildx
     goarch: arm64
     build_flag_templates:
       - "--platform=linux/arm64"
