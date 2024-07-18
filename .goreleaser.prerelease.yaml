@@ -75,6 +75,10 @@ dockers:
       - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-amd64"
     build_flag_templates:
       - "--platform=linux/amd64"
+  - image_templates:
+      - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-arm64"
+    build_flag_templates:
+      - "--platform=linux/arm64"
 
 signs:
   - cmd: cosign
