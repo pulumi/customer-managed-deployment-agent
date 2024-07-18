@@ -6,6 +6,7 @@ ENV PATH="${PATH}:/usr/local/bin"
 COPY customer-managed-deployment-agent /usr/local/bin/customer-managed-deployment-agent
 COPY workflow-runner /usr/local/bin/workflow-runner
 
-RUN chmod +x /usr/local/bin/customer-managed-deployment-agent /usr/local/bin/workflow-runner
+RUN chmod +x /usr/local/bin/customer-managed-deployment-agent
+RUN chmod +x /usr/local/bin/workflow-runner
 
 CMD [ "customer-managed-deployment-agent", "run"]
