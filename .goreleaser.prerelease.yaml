@@ -1,7 +1,7 @@
 dist: goreleaser
 project_name: customer-managed-deployment-agent
 changelog:
-  skip: true
+  disable: true
 release:
   disable: true
 checksum:
@@ -72,7 +72,7 @@ archives:
 
 dockers:
   - image_templates:
-    - pulumi/customer-managed-deployment-agent:{{ .TAG }}
+      - pulumi/customer-managed-deployment-agent:{{ .Tag }}
     build_flag_templates:
       - --build-arg=AGENTBINARY={{ .Builds.customer-managed-deployment-agent.binary }}
       - --build-arg=RUNNERBINARY={{ .Builds.workflow-runner.binary }}
