@@ -71,8 +71,8 @@ dockers:
       - pulumi/customer-managed-deployment-agent:{{ .Tag }}
       - pulumi/customer-managed-deployment-agent:latest
     build_flag_templates:
-      - --build-arg=AGENTBINARY={{ .Builds.customer-managed-deployment-agent.binary }}
-      - --build-arg=RUNNERBINARY={{ .Builds.workflow-runner.binary }}
+      - --build-arg=AGENTBINARY="{{ .Builds.customer-managed-deployment-agent.binary }}"
+      - --build-arg=RUNNERBINARY="{{ .Builds.workflow-runner.binary }}"
 
 signs:
   - cmd: cosign
