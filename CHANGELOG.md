@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.1.2 (2024-07-18)
+
+* Publish docker images on release
+
 1.1.1 (2024-07-03)
 
 * Add new configuration to skip pulling images from the docker registry
