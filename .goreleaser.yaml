@@ -17,6 +17,9 @@ builds:
       - -s
       - -w
       - -X github.com/pulumi/pulumi-service/cmd/customer-managed-deployment-agent/version.Version={{.Tag}}
+      - -extldflags '-static'
+    env:
+      - CGO_ENABLED=0
 
   - id: workflow-runner
     binary: workflow-runner
@@ -32,6 +35,9 @@ builds:
       - -w
       - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
       - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+      - -extldflags '-static'
+    env:
+      - CGO_ENABLED=0
 
   - id: workflow-runner-embeddable
     binary: workflow-runner-embeddable
@@ -45,6 +51,9 @@ builds:
       - -w
       - -X github.com/pulumi/pulumi-service/pkg/version.Buildstamp={{.Env.BUILD_STAMP}}
       - -X github.com/pulumi/pulumi-service/pkg/version.GitHash={{.Env.BUILD_GIT_HASH}}
+      - -extldflags '-static'
+    env:
+      - CGO_ENABLED=0
     hooks:
       post: cp {{ .Path }} workflow-runner-embeddable # Rename the file for easy archiving.
 
