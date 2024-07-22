@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.1.3 (2024-07-22)
+
+* Update build settings to avoid dynamic linking errors on Alpine Linux
+
 1.1.2 (2024-07-18)
 
 * Publish docker images on release
