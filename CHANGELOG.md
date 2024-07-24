@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.2.1 (2024-07-24)
+
+* Add platform to User-Agent
+
 1.2.0 (2024-07-22)
 
 * Add Kubernetes-native deployment mode and installer
