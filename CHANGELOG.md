@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.2.2 (2024-08-30)
+
+* Improve error handling in the agent
+
 1.2.1 (2024-07-24)
 
 * Add platform to User-Agent
