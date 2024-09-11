@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.0 (2024-09-11)
+
+* Support pulling executor images using docker config credstore configuration
+
 1.2.2 (2024-08-30)
 
 * Improve error handling in the agent
