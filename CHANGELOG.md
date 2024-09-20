@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.1 (2024-09-20)
+
+* Fix delay before polling next deployment after job completion
+
 1.3.0 (2024-09-11)
 
 * Support pulling executor images using docker config credstore configuration
