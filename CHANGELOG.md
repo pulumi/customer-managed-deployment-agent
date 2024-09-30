@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.2 (2024-09-30)
+
+* Updating pulumi-service for PULUMI_AGENT_SERVICE_ACCOUNT_NAME
+
 1.3.1 (2024-09-20)
 
 * Fix delay before polling next deployment after job completion
