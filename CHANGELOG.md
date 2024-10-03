@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+Unreleased (0000-00-00)
+
+* Updated kubernetes deployment for gcp service account support
+
 1.3.2 (2024-09-30)
 
 * Updating pulumi-service for PULUMI_AGENT_SERVICE_ACCOUNT_NAME
