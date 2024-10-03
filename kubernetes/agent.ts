@@ -8,6 +8,9 @@ export interface PulumiSelfHostedAgentComponentArgs {
     agentReplicas: pulumi.Input<number>;
     selfHostedAgentsAccessToken: pulumi.Input<string>;
     selfHostedServiceURL: pulumi.Input<string>;
+    workerServiceAccountAnnotations: pulumi.Input<{
+        [key: string]: pulumi.Input<string>;
+    }>;
 }
 
 export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
@@ -15,6 +18,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
     public readonly agentServiceAccount: kubernetes.core.v1.ServiceAccount;
     public readonly agentRole: kubernetes.rbac.v1.Role;
     public readonly agentRoleBinding: kubernetes.rbac.v1.RoleBinding;
+    public readonly workerServiceAccount: kubernetes.core.v1.ServiceAccount;
 
     labels = {
         "app.kubernetes.io/name": "customer-managed-deployment-agent",
@@ -34,7 +38,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                 "PULUMI_AGENT_IMAGE": args.imageName,
                 "PULUMI_AGENT_IMAGE_PULL_POLICY": args.imagePullPolicy,
             },
-        }, {parent: this});
+        }, { parent: this });
 
         const agentSecret = new kubernetes.core.v1.Secret("agent-secret", {
             metadata: {
@@ -44,14 +48,22 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
             stringData: {
                 "PULUMI_AGENT_TOKEN": args.selfHostedAgentsAccessToken,
             }
-        }, {parent: this});
+        }, { parent: this });
 
         this.agentServiceAccount = new kubernetes.core.v1.ServiceAccount("deployment-agent", {
             metadata: {
                 namespace: args.namespace.metadata.name,
                 labels: this.labels,
             },
-        }, {parent: this});
+        }, { parent: this });
+
+        this.workerServiceAccount = new kubernetes.core.v1.ServiceAccount("deployment-agent", {
+            metadata: {
+                namespace: args.namespace.metadata.name,
+                labels: this.labels,
+                annotations: args.workerServiceAccountAnnotations,
+            },
+        }, { parent: this });
 
         this.agentRole = new kubernetes.rbac.v1.Role("deployment-agent", {
             metadata: {
@@ -65,7 +77,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                     verbs: ["create", "get", "list", "watch", "update", "delete"],
                 },
             ],
-        }, {parent: this});
+        }, { parent: this });
 
         this.agentRoleBinding = new kubernetes.rbac.v1.RoleBinding("deployment-agent", {
             metadata: {
@@ -84,7 +96,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                 name: this.agentRole.metadata.name,
                 apiGroup: "rbac.authorization.k8s.io"
             }
-        }, {parent: this});
+        }, { parent: this });
 
         this.agentDeployment = new kubernetes.apps.v1.Deployment("deployment-agent-pool", {
             metadata: {
@@ -156,6 +168,10 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                             },
                                         },
                                     },
+                                    {
+                                        name: "PULUMI_AGENT_SERVICE_ACCOUNT_NAME",
+                                        value: this.workerServiceAccount.metadata.name,
+                                    },
                                 ],
                                 volumeMounts: [
                                     {
@@ -180,7 +196,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                     },
                 },
             },
-        }, {parent: this});
+        }, { parent: this });
 
         this.registerOutputs();
     }
