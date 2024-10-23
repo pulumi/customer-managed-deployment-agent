@@ -26,13 +26,8 @@ pulumi config set agentReplicas 3
 
 Optionally you can set an `agentImagePullPolicy` to a [Kubernetes supported value](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy), which defaults to `Always`.
 
-## GCP
+## workerServiceAccount
 
-For Google Cloud if you want to use service account authentication, you can add the following config items:
-
-```bash
-pulumi config set workerServiceAccountName email@project.iam.gserviceaccount.com
-pulumi config set workerServiceAccountCloud gcp
-```
+There is a ServiceAccount(`workerServiceAccount`) in the `index.ts` can be configured to support cloud service accounts.
 
 This folder also contains a [raw kubernetes yaml file](./raw_deployment.yaml) for reference.

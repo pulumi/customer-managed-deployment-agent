@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.4 (Unreleased)
+
+* Added support for workerServiceAccount to kubernetes application
+
 1.3.3 (2024-10-15)
 
 * Adding in PULUMI_ENV to workflow-runner

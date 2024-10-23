@@ -7,14 +7,13 @@ export const ns = new k8s.core.v1.Namespace("stack-namespace", {
     metadata: { name: pulumiConfig.require("agentNamespace") },
 });
 
-const workerServiceAccountName = pulumiConfig.get("workerServiceAccountName") || null
-let workerServiceAccountAnnotations = {}
-if (workerServiceAccountName) {
-    let cloud = pulumiConfig.require("workerServiceAccountCloud")
-    if (cloud == "gcp") {
-        workerServiceAccountAnnotations = { "iam.gke.io/gcp-service-account": workerServiceAccountName }
-    }
-}
+// Configure this service account for your cloud settings
+const workerServiceAccount = new k8s.core.v1.ServiceAccount("deployment-agent", {
+    metadata: {
+        namespace: ns.metadata.name,
+    },
+}, { parent: this });
+
 
 const agent = new PulumiSelfHostedAgentComponent(
     "self-hosted-agent",
@@ -25,7 +24,7 @@ const agent = new PulumiSelfHostedAgentComponent(
         selfHostedServiceURL: pulumiConfig.get("selfHostedServiceURL") ?? "https://api.pulumi.com",
         imagePullPolicy: pulumiConfig.get("agentImagePullPolicy") || "Always",
         agentReplicas: pulumiConfig.getNumber("agentReplicas") || 3,
-        workerServiceAccountAnnotations
+        workerServiceAccount
     },
     { dependsOn: [ns] },
 );
