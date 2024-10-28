@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.4 (2024-10-28)
+
+* Added environment variable: PULUMI_AGENT_DEBUG_POD to allow users to keep pod behind for troubleshooting and inspection
+
 1.3.3 (2024-10-15)
 
 * Adding in PULUMI_ENV to workflow-runner
