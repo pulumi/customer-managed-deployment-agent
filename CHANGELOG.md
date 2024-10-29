@@ -1,9 +1,10 @@
 CHANGELOG
 =========
 
-1.3.4 (2024-10-28)
+1.3.4 (2024-10-29)
 
 * Added environment variable: PULUMI_AGENT_DEBUG_POD to allow users to keep pod behind for troubleshooting and inspection
+* Added support for workerServiceAccount to kubernetes application
 
 1.3.3 (2024-10-15)
 
