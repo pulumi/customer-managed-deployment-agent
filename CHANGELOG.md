@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.5(Unreleased)
+
+* Added envVars to the codebase so that users don't have to modify the component.
+
 1.3.4 (2024-10-29)
 
 * Added environment variable: PULUMI_AGENT_DEBUG_POD to allow users to keep pod behind for troubleshooting and inspection
