@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.5 (2024-11-07)
+
+* Added the ability to override images for deployment pods with the env var: `PULUMI_DEPLOY_OVERRIDE_IMAGE_REFERENCE`
+
 1.3.4 (2024-10-29)
 
 * Added environment variable: PULUMI_AGENT_DEBUG_POD to allow users to keep pod behind for troubleshooting and inspection
