@@ -9,6 +9,7 @@ export interface PulumiSelfHostedAgentComponentArgs {
     selfHostedAgentsAccessToken: pulumi.Input<string>;
     selfHostedServiceURL: pulumi.Input<string>;
     workerServiceAccount?: kubernetes.core.v1.ServiceAccount;
+    envVars?: kubernetes.types.input.core.v1.EnvVar[]
 }
 
 export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
@@ -165,7 +166,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                         },
                                     },
                                     workerServiceAccountEnvVar,
-
+                                    ...(args.envVars || [])
                                 ],
                                 volumeMounts: [
                                     {

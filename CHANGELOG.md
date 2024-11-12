@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.6(Unreleased)
+
+* Added envVars to the codebase so that users don't have to modify the component.
+
 1.3.5 (2024-11-07)
 
 * Added the ability to override images for deployment pods with the env var: `PULUMI_DEPLOY_OVERRIDE_IMAGE_REFERENCE`
