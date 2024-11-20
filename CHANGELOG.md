@@ -1,8 +1,9 @@
 CHANGELOG
 =========
 
-1.3.6(Unreleased)
+1.3.6(2024-11-14)
 
+* Added `--debug` flag to pulumi-deploy-executor pulumi update command to allow for pulumi update to send debug logs
 * Added envVars to the codebase so that users don't have to modify the component.
 
 1.3.5 (2024-11-07)
