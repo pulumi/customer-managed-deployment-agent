@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as kubernetes from "@pulumi/kubernetes";
+import { V1Pod } from "@kubernetes/client-node";
 
 export interface PulumiSelfHostedAgentComponentArgs {
     namespace: kubernetes.core.v1.Namespace;
@@ -10,8 +11,9 @@ export interface PulumiSelfHostedAgentComponentArgs {
     selfHostedServiceURL: pulumi.Input<string>;
     workerServiceAccount?: kubernetes.core.v1.ServiceAccount;
     envVars?: kubernetes.types.input.core.v1.EnvVar[]
-    agentNumCpus?: number
-    agentMemQuantity?: number
+    agentNumCpus?: number;
+    agentMemQuantity?: number;
+    podTemplate?: V1Pod
 }
 
 export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
@@ -118,6 +120,33 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
             }
         }
 
+        let workerPodSpecVolume: kubernetes.types.input.core.v1.Volume | undefined;
+        let workerPodSpecVolumeMount: kubernetes.types.input.core.v1.VolumeMount | undefined;
+
+        if (args.podTemplate) {
+            // Create a ConfigMap to store the serialized Pod
+            const workerPodSpecConfigMap = new kubernetes.core.v1.ConfigMap("worker-pod-config", {
+                metadata: {
+                    name: "worker-pod-config",
+                    namespace: args.namespace.metadata.name,
+                },
+                data: {
+                    "pod.json": JSON.stringify(args.podTemplate, null, 2),
+                },
+            });
+
+            workerPodSpecVolume = {
+                name: "worker-pod-config",
+                configMap: {
+                    name: workerPodSpecConfigMap.metadata.name,
+                },
+            }
+            workerPodSpecVolumeMount = {
+                name: "worker-pod-config",
+                mountPath: "/worker-pod-config"
+            }
+        }
+
         this.agentDeployment = new kubernetes.apps.v1.Deployment("deployment-agent-pool", {
             metadata: {
                 name: "deployment-agent-pool",
@@ -198,6 +227,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                         name: "agent-work",
                                         mountPath: "/mnt/work",
                                     },
+                                    ...(workerPodSpecVolumeMount ? [workerPodSpecVolumeMount] : []),
                                 ],
                             },
                         ],
@@ -212,6 +242,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                     name: agentConfig.metadata.name,
                                 }
                             },
+                            ...(workerPodSpecVolume ? [workerPodSpecVolume] : []),
                         ],
                     },
                 },
