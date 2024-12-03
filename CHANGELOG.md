@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.7(2024-12-03)
+
+* Added support for requests via: `PULUMI_AGENT_NUM_CPUS`, and `PULUMI_AGENT_MEM_QUANTITY`
+
 1.3.6(2024-11-14)
 
 * Added `--debug` flag to pulumi-deploy-executor pulumi update command to allow for pulumi update to send debug logs

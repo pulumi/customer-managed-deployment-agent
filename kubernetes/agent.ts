@@ -10,6 +10,8 @@ export interface PulumiSelfHostedAgentComponentArgs {
     selfHostedServiceURL: pulumi.Input<string>;
     workerServiceAccount?: kubernetes.core.v1.ServiceAccount;
     envVars?: kubernetes.types.input.core.v1.EnvVar[]
+    agentNumCpus?: number
+    agentMemQuantity?: number
 }
 
 export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
@@ -95,6 +97,23 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                 value: args.workerServiceAccount.metadata.name,
             }
         }
+
+        let agentNumCpusEnvVar: kubernetes.types.input.core.v1.EnvVar
+        if (args.agentNumCpus) {
+            agentNumCpusEnvVar = {
+                name: "PULUMI_AGENT_NUM_CPUS",
+                value: args.agentNumCpus
+            }
+        }
+
+        let agentMemQuantityEnvVar: kubernetes.types.input.core.v1.EnvVar
+        if (args.agentMemQuantity) {
+            agentMemQuantityEnvVar = {
+                name: "PULUMI_AGENT_MEM_QUANTITY",
+                value: args.agentMemQuantity
+            }
+        }
+
         this.agentDeployment = new kubernetes.apps.v1.Deployment("deployment-agent-pool", {
             metadata: {
                 name: "deployment-agent-pool",
@@ -166,6 +185,8 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                         },
                                     },
                                     workerServiceAccountEnvVar,
+                                    agentNumCpusEnvVar,
+                                    agentMemQuantityEnvVar,
                                     ...(args.envVars || [])
                                 ],
                                 volumeMounts: [
