@@ -3,6 +3,9 @@ CHANGELOG
 
 1.4.0 (2025-06-23)
 
+* Added pod spec configuration support for Kubernetes agent, allowing customization of worker pod specifications including node selectors, tolerations, init containers, and resource limits
+* Updated Kubernetes README with comprehensive documentation for pod spec configuration and merge patch semantics
+
 * Added `healthz` endpoint to the agent for health checks
 
 1.3.8 (2025-02-19)
