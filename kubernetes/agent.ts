@@ -98,19 +98,23 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
             }
         }
 
-        let agentNumCpusEnvVar: kubernetes.types.input.core.v1.EnvVar
+        let agentNumCpusEnvVar: kubernetes.types.input.core.v1.EnvVar = {
+            name: "PULUMI_AGENT_NUM_CPUS",
+        }
         if (args.agentNumCpus) {
             agentNumCpusEnvVar = {
                 name: "PULUMI_AGENT_NUM_CPUS",
-                value: args.agentNumCpus
+                value: args.agentNumCpus.toString()
             }
         }
 
-        let agentMemQuantityEnvVar: kubernetes.types.input.core.v1.EnvVar
+        let agentMemQuantityEnvVar: kubernetes.types.input.core.v1.EnvVar = {
+            name: "PULUMI_AGENT_MEM_QUANTITY"
+        }
         if (args.agentMemQuantity) {
             agentMemQuantityEnvVar = {
                 name: "PULUMI_AGENT_MEM_QUANTITY",
-                value: args.agentMemQuantity
+                value: args.agentMemQuantity.toString()
             }
         }
 
