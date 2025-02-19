@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.3.8(2025-02-19)
+
+* fixing issue with node selection where it might get multiple nodes [https://github.com/pulumi/pulumi-service/pull/24650]
+
 1.3.7(2024-12-03)
 
 * Added support for requests via: `PULUMI_AGENT_NUM_CPUS`, and `PULUMI_AGENT_MEM_QUANTITY`
