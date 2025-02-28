@@ -56,3 +56,12 @@ Additionally, there are two options for choosing your node size:
 ### 📌 Note
 
 [Fargate Instance Reference](https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html)
+
+## Troubleshooting
+
+If you encounter issues with the deployment agent, please refer to our [troubleshooting guide](./troubleshooting/README.md) which includes:
+
+* Diagnostic steps for identifying and resolving common problems
+* Monitoring scripts to track pod status and resource usage
+* Instructions for creating debug pods
+* Example Kyverno policies for controlling pod scheduling

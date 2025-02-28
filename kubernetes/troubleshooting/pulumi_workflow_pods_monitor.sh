@@ -5,15 +5,17 @@ NAMESPACE="cmda"
 INTERVAL=1
 MAX_LOGS=10
 LOG_DIR="logs"
+LABEL_SELECTOR="app.kubernetes.io/component=pulumi-workflow"
 
 # Parse command line arguments
-while getopts "n:i:m:d:" opt; do
+while getopts "n:i:m:d:l:" opt; do
   case $opt in
     n) NAMESPACE="$OPTARG" ;;
     i) INTERVAL="$OPTARG" ;;
     m) MAX_LOGS="$OPTARG" ;;
     d) LOG_DIR="$OPTARG" ;;
-    \?) echo "Usage: $0 [-n namespace] [-i interval] [-m max_logs] [-d log_dir]" >&2; exit 1 ;;
+    l) LABEL_SELECTOR="$OPTARG" ;;
+    \?) echo "Usage: $0 [-n namespace] [-i interval] [-m max_logs] [-d log_dir] [-l label_selector]" >&2; exit 1 ;;
   esac
 done
 
@@ -42,15 +44,17 @@ LOGFILE="$LOG_DIR/pulumi_workflow_pods_monitor_${TIMESTAMP}.log"
 
 echo "Starting Pulumi workflow pods monitoring. Log file: $LOGFILE"
 echo "Monitoring pods in namespace: $NAMESPACE"
+echo "Using label selector: $LABEL_SELECTOR"
 echo "Started at: $(date)" > "$LOGFILE"
 echo "Target namespace: $NAMESPACE" >> "$LOGFILE"
+echo "Label selector: $LABEL_SELECTOR" >> "$LOGFILE"
 echo "" >> "$LOGFILE"
 
 # Infinite loop to monitor the pod
 while true; do
   rotate_logs
   
-  PODS=$(kubectl get pods -n "$NAMESPACE" -l 'app.kubernetes.io/component=pulumi-workflow' --no-headers -o custom-columns=":metadata.name")
+  PODS=$(kubectl get pods -n "$NAMESPACE" -l "$LABEL_SELECTOR" --no-headers -o custom-columns=":metadata.name")
   
   if [ -z "$PODS" ]; then
     echo "$(date): No matching pulumi-workflow pods found" >> "$LOGFILE"

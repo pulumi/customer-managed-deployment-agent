@@ -5,7 +5,8 @@
 The order of troubleshooting should be as follows:
 
 1. Identify the pods you're looking for - primarily `pulumi-workflow-runner-*` pods
-   - Note: The agent pool has logs too, but they mostly show it launching runners; these may still be useful
+    > **Note:** The agent pool has logs, as well, it's probably best to have a terminal open running:
+    `kubectl logs -n <namespace> -l 'app.kubernetes.io/name=customer-managed-deployment-agent' -f`
 
 2. Run these commands in separate terminal windows:
 
@@ -96,3 +97,35 @@ Options:
 - `-l` - Label selector (default: app.kubernetes.io/component=pulumi-workflow)
 - `-c` - Container name (default: pulumi-workflow)
 - `-s` - Debug pod suffix (default: debug)
+
+### kyverno.yaml
+
+This file contains a Kyverno policy that automatically enforces node affinity for pods in the CMDA namespace. It ensures all pods in the specified namespace are scheduled on the designated node(s), solving potential scheduling issues.
+
+> **Note:** This is only an example configuration. You will need to modify the node hostname identified by `<PLACEHOLDER>` and namespace values to match your specific environment before applying.
+
+```bash
+# Apply the Kyverno policy
+kubectl apply -f kyverno.yaml
+
+# Verify the policy is active
+kubectl get clusterpolicy
+```
+
+The policy has two key functions:
+
+1. **Mutation**: Automatically adds a nodeSelector to any pod created in the CMDA namespace
+2. **Validation**: Ensures pods have the required nodeSelector (prevents deployment without the selector)
+
+To use this policy:
+
+- Install [Kyverno](https://kyverno.io/docs/installation/) in your cluster first
+- Modify the hostname value in the file to match your target node
+- Apply the policy using kubectl
+
+Learn more about Kyverno:
+
+- [Kyverno documentation](https://kyverno.io/docs/)
+- [Mutating resources](https://kyverno.io/docs/writing-policies/mutate/)
+- [Validating resources](https://kyverno.io/docs/writing-policies/validate/)
+- [Kyverno CLI](https://kyverno.io/docs/kyverno-cli/)

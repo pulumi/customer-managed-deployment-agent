@@ -1,0 +1,51 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: enforce-cmda-node-affinity
+spec:
+  admission: true
+  background: true
+  emitWarning: false
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - cmda
+    exclude:
+      any:
+      - resources:
+          names:
+          - "*agent*"
+    mutate:
+      patchStrategicMerge:
+        spec:
+          nodeSelector:
+            kubernetes.io/hostname: <PLACEHOLDER>
+    name: enforce-node-selector-mutate
+    skipBackgroundRequests: true
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - cmda
+    exclude:
+      any:
+      - resources:
+          names:
+          - "*agent*"
+    name: enforce-node-selector-validate
+    skipBackgroundRequests: true
+    validate:
+      allowExistingViolations: true
+      message: Pods in the 'cmda' namespace must be scheduled on nodes
+        with label 'kubernetes.io/hostname=<PLACEHOLDER>'
+      pattern:
+        spec:
+          nodeSelector:
+            kubernetes.io/hostname: <PLACEHOLDER>
+  validationFailureAction: Enforce
