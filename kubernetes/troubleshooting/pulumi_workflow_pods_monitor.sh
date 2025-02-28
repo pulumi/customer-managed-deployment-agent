@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Default values
-NAMESPACE="pulumi-agent-pool"
+NAMESPACE="cmda"
 INTERVAL=1
 MAX_LOGS=10
 LOG_DIR="logs"
