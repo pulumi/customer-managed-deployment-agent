@@ -61,9 +61,12 @@ Additionally, there are two options for choosing your node size:
 
 ### AWS
 
-To optimize the performance of your deployments, you can use a pull-through cache in Amazon Elastic Container Registry (ECR). This allows you to cache frequently used images closer to your Kubernetes cluster, reducing the time it takes to pull images.
+To optimize the performance of your deployments, you can use a pull-through cache in Amazon Elastic Container Registry (ECR). This allows you to cache frequently used images closer to your Kubernetes cluster, reducing the time it takes to pull images, and to prevent rate limiting.
 
-For more information and an example of how to set up a pull-through cache in ECR using Pulumi, refer to the [Pulumi ECR Cache Example](https://github.com/pulumi/examples/tree/master/aws-ts-ecr-cache).
+For more information and an example of how to set up a pull-through cache in ECR using Pulumi, refer to the following:
+
+* [Pulumi ECR Cache Example](https://github.com/pulumi/examples/tree/master/aws-ts-ecr-cache).
+* [Implementing AWS ECR Pull Through cache for EKS cluster- most in-depth implementation details](https://marcincuber.medium.com/implementing-aws-ecr-pull-through-cache-for-eks-cluster-most-in-depth-implementation-details-e51395568034)
 
 ## Troubleshooting
 
