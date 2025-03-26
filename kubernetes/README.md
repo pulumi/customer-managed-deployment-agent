@@ -57,6 +57,17 @@ Additionally, there are two options for choosing your node size:
 
 [Fargate Instance Reference](https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html)
 
+## Performance
+
+### AWS
+
+To optimize the performance of your deployments, you can use a pull-through cache in Amazon Elastic Container Registry (ECR). This allows you to cache frequently used images closer to your Kubernetes cluster, reducing the time it takes to pull images, and to prevent rate limiting.
+
+For more information and an example of how to set up a pull-through cache in ECR using Pulumi, refer to the following:
+
+* [Pulumi ECR Cache Example](https://github.com/pulumi/examples/tree/master/aws-ts-ecr-cache).
+* [Implementing AWS ECR Pull Through cache for EKS cluster- most in-depth implementation details](https://marcincuber.medium.com/implementing-aws-ecr-pull-through-cache-for-eks-cluster-most-in-depth-implementation-details-e51395568034)
+
 ## Troubleshooting
 
 If you encounter issues with the deployment agent, please refer to our [troubleshooting guide](./troubleshooting/README.md) which includes:
