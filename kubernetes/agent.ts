@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as kubernetes from "@pulumi/kubernetes";
+import { createSerializedPod } from "./pod"
 
 export interface PulumiSelfHostedAgentComponentArgs {
     namespace: kubernetes.core.v1.Namespace;
@@ -118,6 +119,19 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
             }
         }
 
+        const podJson: pulumi.Input<string> = createSerializedPod()
+
+        // Create a ConfigMap to store the serialized Pod
+        const workerPodSpecConfigMap = new kubernetes.core.v1.ConfigMap("worker-pod-config", {
+            metadata: {
+                name: "worker-pod-config",
+                namespace: args.namespace.metadata.name,
+            },
+            data: {
+                "pod.json": podJson,
+            },
+        });
+
         this.agentDeployment = new kubernetes.apps.v1.Deployment("deployment-agent-pool", {
             metadata: {
                 name: "deployment-agent-pool",
@@ -198,6 +212,10 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                         name: "agent-work",
                                         mountPath: "/mnt/work",
                                     },
+                                    {
+                                        name: "worker-pod-config",
+                                        mountPath: "/worker-pod-config"
+                                    }
                                 ],
                             },
                         ],
@@ -212,6 +230,12 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                     name: agentConfig.metadata.name,
                                 }
                             },
+                            {
+                                name: "worker-pod-config",
+                                configMap: {
+                                    name: workerPodSpecConfigMap.metadata.name
+                                }
+                            }
                         ],
                     },
                 },
