@@ -89,7 +89,7 @@ spec:
       containers:
       - env:
         - name: PULUMI_AGENT_DEPLOY_TARGET
-          value: {{ quote .Values.pool.agent.env.pulumiAgentDeployTarget }}
+          value: kubernetes
         - name: PULUMI_AGENT_SHARED_VOLUME_DIRECTORY
           value: {{ quote .Values.pool.agent.env.pulumiAgentSharedVolumeDirectory }}
         - name: PULUMI_AGENT_SERVICE_URL
