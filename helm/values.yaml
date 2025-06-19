@@ -3,7 +3,7 @@ agentConfig:
   pulumiAgentImagePullPolicy: IfNotPresent
   pulumiAgentServiceUrl: https://api.pulumi.com
 agentSecret:
-  pulumiAgentToken: "pul-1234"
+  pulumiAgentToken: ""
 deploymentAgent:
   serviceAccount:
     annotations: {}
