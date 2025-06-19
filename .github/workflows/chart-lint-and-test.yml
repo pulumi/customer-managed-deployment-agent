@@ -38,7 +38,7 @@ jobs:
         id: list-changed
         run: |
           ## If executed with debug this won't work anymore.
-          changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
+          changed=$(ct --config .github/configs/ct-lint.yaml list-changed)
           charts=$(echo "$changed" | tr '\n' ' ' | xargs)
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -52,7 +52,7 @@ jobs:
           rm -f ./ah
 
       - name: Run chart-testing (lint)
-        run: ct lint --debug --config ./.github/configs/ct-lint-install.yaml --lint-conf ./.github/configs/lintconf.yaml
+        run: ct lint --debug --config .github/configs/ct-lint-install.yaml --lint-conf .github/configs/lintconf.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@0025e74a8c7512023d06dc019c617aa3cf561fde # v1.10.0
@@ -63,4 +63,4 @@ jobs:
           kind load docker-image pulumi/customer-managed-deployment-agent:${{ env.VERSION }}
 
       - name: Run chart-testing (install)
-        run: ct install --config ./.github/configs/ct-lint-install.yaml  --helm-extra-set-args "--set=image.tag=${{ env.VERSION }}"
+        run: ct install --config .github/configs/ct-lint-install.yaml  --helm-extra-set-args "--set=image.tag=${{ env.VERSION }}"
