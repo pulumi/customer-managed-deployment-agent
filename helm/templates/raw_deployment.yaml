@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helm.fullname" . }}-agent-config
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+data:
+  PULUMI_AGENT_IMAGE: {{ .Values.agentConfig.pulumiAgentImage | quote }}
+  PULUMI_AGENT_IMAGE_PULL_POLICY: {{ .Values.agentConfig.pulumiAgentImagePullPolicy
+    | quote }}
+  PULUMI_AGENT_SERVICE_URL: {{ .Values.agentConfig.pulumiAgentServiceUrl | quote
+    }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "helm.fullname" . }}-agent-secret
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+data:
+  PULUMI_AGENT_TOKEN: {{ required "agentSecret.pulumiAgentToken is required" .Values.agentSecret.pulumiAgentToken
+    | b64enc | quote }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "helm.fullname" . }}-deployment-agent
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.deploymentAgent.serviceAccount.annotations | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "helm.fullname" . }}-deployment-agent
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  - configmaps
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "helm.fullname" . }}-deployment-agent
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: '{{ include "helm.fullname" . }}-deployment-agent'
+subjects:
+- kind: ServiceAccount
+  name: '{{ include "helm.fullname" . }}-deployment-agent'
+  namespace: '{{ .Release.Namespace }}'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.fullname" . }}-pool
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+  annotations:
+    app.kubernetes.io/name: pulumi-deployment-agent-pool
+spec:
+  replicas: {{ .Values.pool.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: customer-managed-deployment-agent
+    {{- include "helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: customer-managed-deployment-agent
+      {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: PULUMI_AGENT_DEPLOY_TARGET
+          value: {{ quote .Values.pool.agent.env.pulumiAgentDeployTarget }}
+        - name: PULUMI_AGENT_SHARED_VOLUME_DIRECTORY
+          value: {{ quote .Values.pool.agent.env.pulumiAgentSharedVolumeDirectory }}
+        - name: PULUMI_AGENT_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: PULUMI_AGENT_SERVICE_URL
+              name: {{ include "helm.fullname" . }}-agent-config
+        - name: PULUMI_AGENT_IMAGE
+          valueFrom:
+            configMapKeyRef:
+              key: PULUMI_AGENT_IMAGE
+              name: {{ include "helm.fullname" . }}-agent-config
+        - name: PULUMI_AGENT_IMAGE_PULL_POLICY
+          valueFrom:
+            configMapKeyRef:
+              key: PULUMI_AGENT_IMAGE_PULL_POLICY
+              name: {{ include "helm.fullname" . }}-agent-config
+        - name: PULUMI_AGENT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: PULUMI_AGENT_TOKEN
+              name: {{ include "helm.fullname" . }}-agent-secret
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.pool.agent.image.repository }}:{{ .Values.pool.agent.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.pool.agent.imagePullPolicy }}
+        name: agent
+        resources: {}
+        volumeMounts:
+        - mountPath: /mnt/work
+          name: agent-work
+      serviceAccountName: {{ include "helm.fullname" . }}-deployment-agent
+      volumes:
+      - emptyDir: {}
+        name: agent-work
+      - configMap:
+          name: {{ include "helm.fullname" . }}-agent-config
+        name: agent-config
