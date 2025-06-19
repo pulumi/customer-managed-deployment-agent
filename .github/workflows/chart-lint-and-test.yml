@@ -30,11 +30,6 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
-
       - name: Setup Chart Linting
         id: lint
         uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # v2.6.1
