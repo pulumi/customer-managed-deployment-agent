@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.3.9(Unreleased)
+
+* Added pod spec configuration support for Kubernetes agent, allowing customization of worker pod specifications including node selectors, tolerations, init containers, and resource limits
+* Updated Kubernetes README with comprehensive documentation for pod spec configuration and merge patch semantics
+
 1.3.8(2025-02-19)
 
 * fixing issue with node selection where it might get multiple nodes [https://github.com/pulumi/pulumi-service/pull/24650]
