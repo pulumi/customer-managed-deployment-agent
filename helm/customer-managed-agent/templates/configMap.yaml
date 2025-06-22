@@ -10,13 +10,3 @@ data:
     | quote }}
   PULUMI_AGENT_SERVICE_URL: {{ .Values.agentConfig.pulumiAgentServiceUrl | quote
     }}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ include "customer-managed-agent.fullname" . }}-agent-secret
-  labels:
-  {{- include "customer-managed-agent.labels" . | nindent 4 }}
-data:
-  PULUMI_AGENT_TOKEN: {{ required "agentSecret.pulumiAgentToken is required" .Values.agentSecret.pulumiAgentToken
-    | b64enc | quote }}

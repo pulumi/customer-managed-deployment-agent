@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "customer-managed-agent.fullname" . }}-pool
+  name: {{ include "customer-managed-agent.fullname" . }}-deployment-agent-pool
   labels:
   {{- include "customer-managed-agent.labels" . | nindent 4 }}
   annotations:
     app.kubernetes.io/name: pulumi-deployment-agent-pool
 spec:
-  replicas: {{ .Values.pool.replicas }}
+  replicas: {{ .Values.deploymentAgentPool.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: customer-managed-deployment-agent
@@ -21,9 +21,11 @@ spec:
       containers:
       - env:
         - name: PULUMI_AGENT_DEPLOY_TARGET
-          value: {{ quote .Values.pool.agent.env.pulumiAgentDeployTarget }}
+          value: {{ quote .Values.deploymentAgentPool.agent.env.pulumiAgentDeployTarget
+            }}
         - name: PULUMI_AGENT_SHARED_VOLUME_DIRECTORY
-          value: {{ quote .Values.pool.agent.env.pulumiAgentSharedVolumeDirectory }}
+          value: {{ quote .Values.deploymentAgentPool.agent.env.pulumiAgentSharedVolumeDirectory
+            }}
         - name: PULUMI_AGENT_SERVICE_URL
           valueFrom:
             configMapKeyRef:
@@ -45,16 +47,18 @@ spec:
               key: PULUMI_AGENT_TOKEN
               name: {{ include "customer-managed-agent.fullname" . }}-agent-secret
         - name: PULUMI_AGENT_SERVICE_ACCOUNT_NAME
-          value: {{ quote .Values.pool.agent.env.pulumiAgentServiceAccountName }}
+          value: {{ quote .Values.deploymentAgentPool.agent.env.pulumiAgentServiceAccountName
+            }}
         - name: PULUMI_AGENT_NUM_CPUS
-          value: {{ quote .Values.pool.agent.env.pulumiAgentNumCpus }}
+          value: {{ quote .Values.deploymentAgentPool.agent.env.pulumiAgentNumCpus }}
         - name: PULUMI_AGENT_MEM_QUANTITY
-          value: {{ quote .Values.pool.agent.env.pulumiAgentMemQuantity }}
+          value: {{ quote .Values.deploymentAgentPool.agent.env.pulumiAgentMemQuantity
+            }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.pool.agent.image.repository }}:{{ .Values.pool.agent.image.tag
+        image: {{ .Values.deploymentAgentPool.agent.image.repository }}:{{ .Values.deploymentAgentPool.agent.image.tag
           | default .Chart.AppVersion }}
-        imagePullPolicy: {{ .Values.pool.agent.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.deploymentAgentPool.agent.imagePullPolicy }}
         name: agent
         resources: {}
         volumeMounts:

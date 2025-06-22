@@ -8,8 +8,7 @@ deploymentAgent:
   serviceAccount:
     annotations:
       pulumi.com/autonamed: "true"
-kubernetesClusterDomain: cluster.local
-pool:
+deploymentAgentPool:
   agent:
     env:
       pulumiAgentDeployTarget: kubernetes
@@ -22,3 +21,4 @@ pool:
       tag: latest-amd64
     imagePullPolicy: Always
   replicas: 3
+kubernetesClusterDomain: cluster.local
