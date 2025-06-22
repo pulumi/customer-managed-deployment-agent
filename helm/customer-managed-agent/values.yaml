@@ -1,19 +1,24 @@
 agentConfig:
   pulumiAgentImage: pulumi/customer-managed-deployment-agent:latest-amd64
-  pulumiAgentImagePullPolicy: IfNotPresent
+  pulumiAgentImagePullPolicy: Always
   pulumiAgentServiceUrl: https://api.pulumi.com
 agentSecret:
   pulumiAgentToken: ""
 deploymentAgent:
   serviceAccount:
-    annotations: {}
+    annotations:
+      pulumi.com/autonamed: "true"
 kubernetesClusterDomain: cluster.local
 pool:
   agent:
     env:
+      pulumiAgentDeployTarget: kubernetes
+      pulumiAgentMemQuantity: ""
+      pulumiAgentNumCpus: ""
+      pulumiAgentServiceAccountName: deployment-agent
       pulumiAgentSharedVolumeDirectory: /mnt/work
     image:
       repository: pulumi/customer-managed-deployment-agent
       tag: latest-amd64
-    imagePullPolicy: IfNotPresent
-  replicas: 1
+    imagePullPolicy: Always
+  replicas: 3
