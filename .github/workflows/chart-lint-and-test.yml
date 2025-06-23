@@ -65,6 +65,12 @@ jobs:
       - name: Load images into KinD
         run: |
           kind load docker-image pulumi/customer-managed-deployment-agent:${{ env.VERSION }} --name chart-testing
+      
+      - name: Authenticate with Pulumi Cloud
+        uses: pulumi/auth-actions@v1
+        with:
+          organization: team-ce
+          requested-token-type: urn:pulumi:token-type:access_token:organization
 
       - name: Run chart-testing (install)
         run: ct install --config ${{ github.workspace }}/.github/configs/ct-lint-install.yaml  --helm-extra-set-args "--set=image.tag=${{ env.VERSION }}"
