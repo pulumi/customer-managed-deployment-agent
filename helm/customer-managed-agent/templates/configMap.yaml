@@ -5,7 +5,7 @@ metadata:
   labels:
   {{- include "customer-managed-deployment-agent.labels" . | nindent 4 }}
 data:
-  PULUMI_AGENT_IMAGE: {{ .Values.image.pulumiAgentImage | quote }}
+  PULUMI_AGENT_IMAGE: {{ include "customer-managed-deployment-agent.imageName" . | quote }}
   PULUMI_AGENT_IMAGE_PULL_POLICY: {{ .Values.image.imagePullPolicy | quote }}
   PULUMI_AGENT_SERVICE_URL: {{ .Values.customerManagedAgentConfig.backEndApiUrl | quote }}
   
