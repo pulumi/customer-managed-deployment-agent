@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "customer-managed-agent.name" -}}
+{{- define "customer-managed-deployment-agent.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "customer-managed-agent.fullname" -}}
+{{- define "customer-managed-deployment-agent.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,18 +24,18 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
-Create chart name and version as used by the chart label.
+Create the name of the image to use
 */}}
-{{- define "customer-managed-agent.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- define "customer-managed-deployment-agent.imageName" -}}
+{{- .Values.image.registry }}/{{- .Values.image.repository }}:{{- .Values.image.tag | default "latest-amd64" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "customer-managed-agent.labels" -}}
-helm.sh/chart: {{ include "customer-managed-agent.chart" . }}
-{{ include "customer-managed-agent.selectorLabels" . }}
+{{- define "customer-managed-deployment-agent.labels" -}}
+helm.sh/chart: {{ include "customer-managed-deployment-agent.chart" . }}
+{{ include "customer-managed-deployment-agent.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "customer-managed-agent.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "customer-managed-agent.name" . }}
+{{- define "customer-managed-deployment-agent.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "customer-managed-deployment-agent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "customer-managed-agent.serviceAccountName" -}}
+{{- define "customer-managed-deployment-agent.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "customer-managed-agent.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "customer-managed-deployment-agent.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

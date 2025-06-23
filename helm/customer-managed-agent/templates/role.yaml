@@ -1,9 +1,10 @@
+{{- if and .Values.rbac.create .Values.rbac.createRole }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "customer-managed-agent.fullname" . }}-deployment-agent
+  name: {{ include "customer-managed-deployment-agent.fullname" . }}-deployment-agent
   labels:
-  {{- include "customer-managed-agent.labels" . | nindent 4 }}
+  {{- include "customer-managed-deployment-agent.labels" . | nindent 4 }}
   annotations:
     pulumi.com/autonamed: "true"
 rules:
@@ -20,3 +21,4 @@ rules:
   - watch
   - update
   - delete
+{{- end }}
