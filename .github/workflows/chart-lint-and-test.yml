@@ -38,7 +38,7 @@ jobs:
         id: list-changed
         run: |
           ## If executed with debug this won't work anymore.
-          changed=$(ct --config ${{ github.workspace }}/.github/configs/ct-lint.yaml list-changed)
+          changed=$(ct --config ${{ github.workspace }}/.github/configs/ct-lint-install.yaml list-changed)
           charts=$(echo "$changed" | tr '\n' ' ' | xargs)
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
