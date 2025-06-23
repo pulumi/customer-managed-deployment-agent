@@ -64,7 +64,7 @@ jobs:
       
       - name: Load images into KinD
         run: |
-          kind load docker-image pulumi/customer-managed-deployment-agent:${{ env.VERSION }}
+          kind load docker-image pulumi/customer-managed-deployment-agent:${{ env.VERSION }} --cluster chart-testing
 
       - name: Run chart-testing (install)
         run: ct install --config ${{ github.workspace }}/.github/configs/ct-lint-install.yaml  --helm-extra-set-args "--set=image.tag=${{ env.VERSION }}"
