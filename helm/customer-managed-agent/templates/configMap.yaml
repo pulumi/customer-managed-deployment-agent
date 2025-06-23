@@ -8,3 +8,4 @@ data:
   PULUMI_AGENT_IMAGE: {{ .Values.image.pulumiAgentImage | quote }}
   PULUMI_AGENT_IMAGE_PULL_POLICY: {{ .Values.image.imagePullPolicy | quote }}
   PULUMI_AGENT_SERVICE_URL: {{ .Values.customerManagedAgentConfig.backEndApiUrl | quote }}
+  
