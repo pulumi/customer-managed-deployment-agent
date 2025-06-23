@@ -64,6 +64,14 @@ spec:
           value: {{ quote .Values.customerManagedAgentConfig.memoryQuantity
             }}
         image: {{ include "customer-managed-deployment-agent.imageName" . | quote }}
+        {{- if .Values.useLivenessProbe }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.securityContext }}
         securityContext:

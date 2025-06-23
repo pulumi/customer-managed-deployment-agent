@@ -33,6 +33,8 @@ image:
 # -- The image pull secrets
 imagePullSecrets: ""
 
+useLivenessProbe: false
+
 # RBAC settings
 rbac:
   # -- Specifies whether RBAC resources should be created
