@@ -15,6 +15,7 @@ fullnameOverride: ""
 customerManagedAgentConfig:
   backEndApiUrl: https://api.pulumi.com
   agentDeployTarget: kubernetes
+  accessTokenSecretName: ""
 
 image:
   # -- The image registry to pull from
