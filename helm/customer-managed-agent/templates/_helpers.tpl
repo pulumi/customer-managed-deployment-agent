@@ -27,7 +27,14 @@ If release name contains chart name it will be used as a full name.
 Create the name of the image to use
 */}}
 {{- define "customer-managed-deployment-agent.imageName" -}}
-{{- .Values.image.registry }}/{{- .Values.image.repository }}:{{- .Values.image.tag | default "latest-amd64" }}
+{{- .Values.image.registry }}/{{- .Values.image.repository }}:{{- .Values.image.tag | replace ":" "-" }}
+{{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "customer-managed-deployment-agent.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*

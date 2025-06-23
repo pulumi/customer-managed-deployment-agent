@@ -16,6 +16,9 @@ customerManagedAgentConfig:
   backEndApiUrl: https://api.pulumi.com
   agentDeployTarget: kubernetes
   accessTokenSecretName: ""
+  sharedVolumeDirectory: /mnt/work
+  numberCPUs: 1000 
+  memoryQuantity: 4000000000
 
 image:
   # -- The image registry to pull from
