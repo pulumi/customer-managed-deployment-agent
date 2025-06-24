@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as kubernetes from "@pulumi/kubernetes";
+import { V1Pod } from "@kubernetes/client-node";
 
 export interface PulumiSelfHostedAgentComponentArgs {
     namespace: kubernetes.core.v1.Namespace;
@@ -10,8 +11,9 @@ export interface PulumiSelfHostedAgentComponentArgs {
     selfHostedServiceURL: pulumi.Input<string>;
     workerServiceAccount?: kubernetes.core.v1.ServiceAccount;
     envVars?: kubernetes.types.input.core.v1.EnvVar[]
-    agentNumCpus?: number
-    agentMemQuantity?: number
+    agentNumCpus?: number;
+    agentMemQuantity?: number;
+    podTemplate?: V1Pod
 }
 
 export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
@@ -37,6 +39,7 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                 "PULUMI_AGENT_SERVICE_URL": args.selfHostedServiceURL,
                 "PULUMI_AGENT_IMAGE": args.imageName,
                 "PULUMI_AGENT_IMAGE_PULL_POLICY": args.imagePullPolicy,
+                "worker-pod.json": JSON.stringify(args.podTemplate, null, 2),
             },
         }, { parent: this });
 
@@ -198,6 +201,12 @@ export class PulumiSelfHostedAgentComponent extends pulumi.ComponentResource {
                                         name: "agent-work",
                                         mountPath: "/mnt/work",
                                     },
+                                    {
+                                        name: "agent-config",
+                                        mountPath: "/mnt/worker-pod.json",
+                                        subPath: "worker-pod.json",
+                                        readOnly: true,
+                                    }
                                 ],
                             },
                         ],
