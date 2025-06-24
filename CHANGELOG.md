@@ -1,15 +1,19 @@
 CHANGELOG
 =========
 
-1.3.8(2025-02-19)
+1.4.0 (2025-06-23)
 
-* fixing issue with node selection where it might get multiple nodes [https://github.com/pulumi/pulumi-service/pull/24650]
+* Added `healthz` endpoint to the agent for health checks
 
-1.3.7(2024-12-03)
+1.3.8 (2025-02-19)
+
+* Fixes an issue with node selection where it might get multiple nodes
+
+1.3.7 (2024-12-03)
 
 * Added support for requests via: `PULUMI_AGENT_NUM_CPUS`, and `PULUMI_AGENT_MEM_QUANTITY`
 
-1.3.6(2024-11-14)
+1.3.6 (2024-11-14)
 
 * Added `--debug` flag to pulumi-deploy-executor pulumi update command to allow for pulumi update to send debug logs
 * Added envVars to the codebase so that users don't have to modify the component.
