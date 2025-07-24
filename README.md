@@ -55,7 +55,7 @@ First run a `docker login` to have valid credentials to your Docker Hub account.
 $ export REPO_OWNER=<your-docker-hub-name>
 $ export BUILD_STAMP=$(cd ./pulumi-service && date -u '+%Y-%m-%d_%I:%M:%S%p')
 $ export BUILD_GIT_HASH=$(cd ./pulumi-service && git rev-parse HEAD)
-$ goreleaser release --skip=validate,sign,archive --clean
+$ goreleaser release --skip=validate,sign,archive,publish --clean
 ```
 
 This should build a multi-arch image for `amd64` and `arm64` architectures and publish it to your own Docker Hub account.
