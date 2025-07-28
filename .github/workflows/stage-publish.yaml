@@ -54,3 +54,5 @@ jobs:
         with:
           args: ${{ inputs.goreleaser-args }}
           version: '~> v2'
+        env:
+          REPO_OWNER: pulumi

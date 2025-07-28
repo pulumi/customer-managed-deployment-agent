@@ -59,7 +59,7 @@ builds:
 
 archives:
   - id: customer-managed-deployment-agent
-    builds:
+    ids:
       - customer-managed-deployment-agent
       - workflow-runner
     files:
@@ -73,24 +73,42 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [ "zip" ]
     wrap_in_directory: customer-managed-deployment-agent
 
 dockers:
   - image_templates:
-      - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-amd64"
-      - "pulumi/customer-managed-deployment-agent:latest-amd64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:{{ .Tag }}-amd64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:latest-amd64"
     use: buildx
     goarch: amd64
     build_flag_templates:
       - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
   - image_templates:
-      - "pulumi/customer-managed-deployment-agent:{{ .Tag }}-arm64"
-      - "pulumi/customer-managed-deployment-agent:latest-arm64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:{{ .Tag }}-arm64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:latest-arm64"
     use: buildx
     goarch: arm64
     build_flag_templates:
       - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+
+docker_manifests:
+  - name_template: "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:{{ .Tag }}"
+    image_templates:
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:{{ .Tag }}-amd64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:{{ .Tag }}-arm64"
+  - name_template: "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:latest"
+    image_templates:
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:latest-amd64"
+      - "{{ .Env.REPO_OWNER }}/customer-managed-deployment-agent:latest-arm64"
 
 signs:
   - cmd: cosign
