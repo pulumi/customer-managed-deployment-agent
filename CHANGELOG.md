@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.4.2 (2025-08-09)
+
+* * Exposing `/healthz` to prometheus and adding docs in `kubernetes/README.md`
+
 1.4.1 (2025-08-01)
 
 * Adding support for a pod template to the deployment runners
