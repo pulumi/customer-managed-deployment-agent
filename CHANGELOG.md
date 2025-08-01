@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+1.4.1 (2025-08-01)
+
+* Adding support for a pod template to the deployment runners
+
 1.4.0 (2025-06-23)
 
 * Added pod spec configuration support for Kubernetes agent, allowing customization of worker pod specifications including node selectors, tolerations, init containers, and resource limits
